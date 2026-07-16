@@ -1,0 +1,61 @@
+.hero-section {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero-content {
+  text-align: center;
+  z-index: 10;
+}
+
+.hero-title {
+  font-family: var(--font-heading);
+  font-size: clamp(3rem, 8vw, 8rem);
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  mix-blend-mode: difference;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+}
+
+/* Compass Navigation */
+.compass-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.nav-item {
+  position: absolute;
+  pointer-events: auto;
+  padding: 2rem;
+  font-family: var(--font-heading);
+  text-transform: lowercase;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.nav-item:hover {
+  opacity: 1;
+}
+
+.top-left { top: 0; left: 0; }
+.top-right { top: 0; right: 0; }
+.bottom-center { bottom: 0; left: 50%; transform: translateX(-50%); }

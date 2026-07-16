@@ -1,0 +1,91 @@
+.experience-section {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 10vh 0;
+}
+
+.experience-heading {
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: 800;
+  padding: 0 10vw;
+  margin-bottom: 5vh;
+  opacity: 0.1;
+}
+
+.experience-track-container {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.experience-track {
+  display: flex;
+  width: max-content;
+  padding: 0 10vw;
+  gap: 10vw;
+}
+
+.experience-card {
+  width: 500px;
+  max-width: 80vw;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  padding-left: 2rem;
+  position: relative;
+}
+
+.experience-card::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  background-color: var(--color-text);
+  border-radius: 50%;
+}
+
+.experience-number {
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  font-weight: 800;
+  opacity: 0.1;
+  margin-bottom: -1rem;
+}
+
+.experience-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.experience-company {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+  margin-bottom: 0.5rem;
+}
+
+.experience-date {
+  font-size: 0.9rem;
+  opacity: 0.4;
+  margin-bottom: 1.5rem;
+}
+
+.experience-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .experience-card {
+    width: 300px;
+  }
+}

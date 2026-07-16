@@ -1,0 +1,90 @@
+.dev-terminal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  max-width: 90vw;
+  height: 400px;
+  background: rgba(10, 10, 15, 0.95);
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  z-index: 9999999;
+  font-family: monospace;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  animation: termIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes termIn {
+  from { opacity: 0; transform: translate(-50%, -40%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.term-header {
+  background: rgba(20, 20, 25, 0.9);
+  padding: 10px 15px;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.term-title {
+  color: #888;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.term-close {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 1rem;
+}
+.term-close:hover { color: #fff; }
+
+.term-body {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.term-line {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.term-line.output { color: #a0a0a0; }
+.term-line.input { color: #fff; }
+
+.term-input-line {
+  display: flex;
+  padding: 15px;
+  border-top: 1px solid #222;
+  background: rgba(15, 15, 20, 0.9);
+}
+
+.term-prompt {
+  color: #0ff;
+  margin-right: 10px;
+}
+
+.term-input-line input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.9rem;
+}

@@ -1,0 +1,21 @@
+.preloader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.preloader-text {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: var(--color-text);
+  text-transform: uppercase;
+}
