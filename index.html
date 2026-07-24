@@ -457,6 +457,23 @@
       perspective: 1000px;
       transform-style: preserve-3d;
     }
+    .media-hitbox {
+      position: absolute;
+      z-index: 100;
+      cursor: pointer;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.01);
+    }
+    .main-hitbox {
+      top: 0; bottom: 0; left: 0; right: 0;
+      margin: auto;
+      width: 80%;
+      height: 70%;
+    }
+    .float-hitbox {
+      width: 40%;
+      aspect-ratio: 16/9;
+    }
     .work-media-main {
       position: absolute;
       top: 0; bottom: 0; left: 0; right: 0;
@@ -468,6 +485,7 @@
       border: 1px solid var(--border);
       box-shadow: 0 20px 50px rgba(0,0,0,0.5);
       z-index: 2;
+      pointer-events: none;
     }
     .work-media-main video {
       width: 100%; height: 100%; object-fit: cover;
@@ -490,10 +508,11 @@
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.15);
       box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transition: border-color 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
       z-index: 1;
       backdrop-filter: blur(10px);
       background: rgba(255,255,255,0.02);
+      pointer-events: none;
     }
     .work-media-float img {
       width: 100%; height: 100%; object-fit: cover;
@@ -1525,7 +1544,8 @@ projects.forEach((p, i) => {
   if (p.images && p.images.length > 0) {
     p.images.forEach((img, idx) => {
       floatsHTML += `
-        <div class="work-media-float float-${idx + 1} magnetic-el audio-reactive">
+        <div class="media-hitbox float-hitbox float-${idx + 1}" data-target="float-${idx + 1}"></div>
+        <div class="work-media-float float-${idx + 1} magnetic-el audio-reactive" data-id="float-${idx + 1}">
           <img src="${img}" loading="lazy" />
         </div>
       `;
@@ -1544,7 +1564,8 @@ projects.forEach((p, i) => {
       </div>
     </div>
     <div class="work-media-cluster">
-      <div class="work-media-main magnetic-el audio-reactive">
+      <div class="media-hitbox main-hitbox" data-target="main"></div>
+      <div class="work-media-main magnetic-el audio-reactive" data-id="main">
         <video src="${p.video}" loop muted playsinline preload="metadata"></video>
       </div>
       ${floatsHTML}
@@ -2358,21 +2379,52 @@ panels.forEach((panel, i) => {
   }
 });
 
-// --- HOLOGRAPHIC 3D TILT ---
-document.querySelectorAll('.work-media-main, .work-media-float').forEach(el => {
+// --- HOLOGRAPHIC 3D TILT & FOCUS EFFECT ---
+document.querySelectorAll('.media-hitbox').forEach(hitbox => {
+  const cluster = hitbox.closest('.work-media-cluster');
+  const targetId = hitbox.getAttribute('data-target');
+  const visualEl = cluster.querySelector(`[data-id="${targetId}"]`);
+  if (!visualEl) return;
+
   const glare = document.createElement('div');
   glare.className = 'glare';
-  el.appendChild(glare);
+  visualEl.appendChild(glare);
 
-  el.addEventListener('mousemove', (e) => {
-    const rect = el.getBoundingClientRect();
+  const targetScale = visualEl.classList.contains('work-media-float') ? 1.15 : 1.05;
+
+  hitbox.addEventListener('mouseenter', () => {
+    gsap.set(visualEl, { zIndex: 50 });
+    gsap.set(hitbox, { zIndex: 101 }); // Keep hitbox above
+    gsap.to(hitbox, { scale: targetScale, duration: 0.5, ease: "power2.out" });
+    
+    if (cluster) {
+      const siblingVisuals = Array.from(cluster.querySelectorAll('.work-media-main, .work-media-float')).filter(sibling => sibling !== visualEl);
+      const siblingHitboxes = Array.from(cluster.querySelectorAll('.media-hitbox')).filter(sibling => sibling !== hitbox);
+      
+      gsap.to(siblingVisuals, {
+        scale: 0.85,
+        opacity: 0.3,
+        filter: 'blur(4px)',
+        duration: 0.5,
+        ease: "power2.out"
+      });
+      gsap.to(siblingHitboxes, {
+        scale: 0.85,
+        duration: 0.5,
+        ease: "power2.out"
+      });
+    }
+  });
+
+  hitbox.addEventListener('mousemove', (e) => {
+    const rect = hitbox.getBoundingClientRect();
     const xPct = (e.clientX - rect.left) / rect.width - 0.5;
     const yPct = (e.clientY - rect.top) / rect.height - 0.5;
     
-    gsap.to(el, {
+    gsap.to(visualEl, {
       rotateY: xPct * 30,
       rotateX: -yPct * 30,
-      scale: el.classList.contains('work-media-float') ? 1.15 : 1.05,
+      scale: targetScale,
       duration: 0.5,
       ease: "power2.out",
       transformPerspective: 1000
@@ -2386,9 +2438,37 @@ document.querySelectorAll('.work-media-main, .work-media-float').forEach(el => {
     });
   });
   
-  el.addEventListener('mouseleave', () => {
-    gsap.to(el, { rotateY: 0, rotateX: 0, scale: 1, duration: 0.8, ease: "power2.out" });
+  hitbox.addEventListener('mouseleave', () => {
+    gsap.to(hitbox, { scale: 1, duration: 0.8, ease: "power2.out" });
+    gsap.set(hitbox, { zIndex: 100 });
+    
+    gsap.to(visualEl, { 
+      rotateY: 0, 
+      rotateX: 0, 
+      scale: 1, 
+      duration: 0.8, 
+      ease: "power2.out" 
+    });
+    gsap.set(visualEl, { zIndex: visualEl.classList.contains('work-media-main') ? 2 : 1 });
     gsap.to(glare, { opacity: 0, duration: 0.8 });
+
+    if (cluster) {
+      const siblingVisuals = Array.from(cluster.querySelectorAll('.work-media-main, .work-media-float')).filter(sibling => sibling !== visualEl);
+      const siblingHitboxes = Array.from(cluster.querySelectorAll('.media-hitbox')).filter(sibling => sibling !== hitbox);
+      
+      gsap.to(siblingVisuals, {
+        scale: 1,
+        opacity: 1,
+        filter: 'blur(0px)',
+        duration: 0.8,
+        ease: "power2.out"
+      });
+      gsap.to(siblingHitboxes, {
+        scale: 1,
+        duration: 0.8,
+        ease: "power2.out"
+      });
+    }
   });
 });
 
